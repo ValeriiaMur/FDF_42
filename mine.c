@@ -38,25 +38,28 @@ typedef struct			s_map
 
 void drawline(t_point *point, t_map *map, void *mlx_ptr, void *win_ptr, int i)
 {
-	int dx, dy, f;
+	int dx, dy, f, x, y;
 	dx = point[i].x - point[i-1].x;
 	dy = point[i].y - point[i-1].y;
 	f = dx / 2;
 	// printf("this is dx:%d and dy:%d and f:%d\n", dx, dy, f);
 	// printf("This is x0 and y0: %f %f NOW x1 and y1: %f %f", point[i-1].x, point[i].x, point[i-1].y, point[i].y);
-	while (point[i].x > point[i-1].x)
+  x = point[i - 1].x;
+
+  while (point[i].x > x)
 	{
-		mlx_pixel_put(mlx_ptr, win_ptr, 450 + point[i-1].x, 400 + point[i-1].y, 0xffd700);
-		if (f < 0)
-		{
-			f = f + dx;
-		}
-		else
-		{
-			f = f - dy;
-			point[i-1].y++;
-		}
-		point[i-1].x++;
+    y = point[i - 1].y + dy * (x - point[i - 1].x) / dx;
+		mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 400 + y, 0xffd700);
+		// if (f < 0)
+		// {
+		// 	f = f + dx;
+		// }
+		// else
+		// {
+		// 	f = f - dy;
+		// 	point[i-1].y++;
+		// }
+		x++;
 	}
 }
 
