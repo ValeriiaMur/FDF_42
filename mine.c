@@ -20,54 +20,56 @@
 
  typedef struct s_point
  {
- 	double x;
- 	double y;
+ 	int x;
+ 	int y;
  }				t_point;
 
 typedef struct			s_map
 {
-	double				width;
-	double				height;
-	double				stepx;
-	double 				stepy;
-	double				total;
-	double				x_now;
-	double				y_now;
+	int				width;
+	int				height;
+	int				stepx;
+	int 			stepy;
+	int				total;
+	int				x_now;
+	int				y_now;
 }						t_map;
 
 
 void drawline(t_point *point, t_map *map, void *mlx_ptr, void *win_ptr, int i)
 {
-	int dx, dy, f, x, y;
+	int dx;
+  int dy;
+  int x;
+  int y;
+
 	dx = point[i].x - point[i-1].x;
 	dy = point[i].y - point[i-1].y;
-	f = dx / 2;
-	// printf("this is dx:%d and dy:%d and f:%d\n", dx, dy, f);
-	// printf("This is x0 and y0: %f %f NOW x1 and y1: %f %f", point[i-1].x, point[i].x, point[i-1].y, point[i].y);
   x = point[i - 1].x;
-
   while (point[i].x > x)
 	{
     y = point[i - 1].y + dy * (x - point[i - 1].x) / dx;
-		mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 400 + y, 0xffd700);
-		// if (f < 0)
-		// {
-		// 	f = f + dx;
-		// }
-		// else
-		// {
-		// 	f = f - dy;
-		// 	point[i-1].y++;
-		// }
+		mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 180 + y, 0xffd700);
 		x++;
 	}
-}
+  if (i + map->width < map->total)
+  {
+    dx = point[i + map->width - 1].x - point[i].x;
+    dy = point[i + map->width - 1].y - point[i].x;
+    x = point[i].x;
+    while (x < point[i + map->width - 1].x)
+    {
+      y = point[i].y + dy * (x - point[i].x) / dx;
+      mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 180 + y, 0xff0000);
+      x++;
+    }
+  }
 
+//  printf("this is x %d and y %d\n", x, y);
+}
 
 void to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr, void *win_ptr )
 {
-	int dx, dy;
-	int counter = 0;
 	if (massiv == 0)
 	{
 		point[i].x = ((map->x_now - map->y_now) + map->stepx) * cos(0.523599);
@@ -79,7 +81,7 @@ void to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr
 		point[i].y = -(massiv * 3) + (map->x_now + map->y_now) * sin(0.523599);
 	}
 	map->x_now = map->x_now + map->stepx;
-	mlx_pixel_put(mlx_ptr, win_ptr, 450 + point[i].x, 400 + point[i].y, 0xffd700);
+	mlx_pixel_put(mlx_ptr, win_ptr, 450 + point[i].x, 180 + point[i].y, 0xffd700);
 	if (i > 0)
 	{
 		drawline(point, map, mlx_ptr, win_ptr, i);
@@ -87,7 +89,7 @@ void to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr
 	// printf("This is x %f and y %f and i is : %d\n", point[i].x, point[i].y, i);
 }
 
-void map_init(t_map *map, double x, double y)
+void map_init(t_map *map, int x, int y)
 {
 	map->height = y;
 	map->width = x;
@@ -102,8 +104,8 @@ void		read_map(char *file, t_map *map, void *mlx_ptr, void *win_ptr)
 {
 	int fd;
 	char *line;
-	double x = 0;
-	double y = 0;
+	int x = 0;
+	int y = 0;
 	int i = 0;
 	char **massiv;
 	t_point *point;
