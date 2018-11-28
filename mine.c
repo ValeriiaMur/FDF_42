@@ -6,13 +6,12 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 12:52:10 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/11/25 18:19:11 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/11/27 18:43:31 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minilibx/mlx.h"
 #include <unistd.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "./libft/libft.h"
@@ -36,40 +35,102 @@ typedef struct			s_map
 }						t_map;
 
 
-void drawline(t_point *point, t_map *map, void *mlx_ptr, void *win_ptr, int i)
+
+
+void draw_x(t_point *point, void *mlx_ptr, void *win_ptr, int i)
 {
 	int dx;
-  int dy;
-  int x;
-  int y;
+  	int dy;
+  	int x;
+  	int y;
 
 	dx = point[i].x - point[i-1].x;
 	dy = point[i].y - point[i-1].y;
-  x = point[i - 1].x;
-  while (point[i].x > x)
+  	x = point[i - 1].x;
+  	while (point[i].x > x)
 	{
-    y = point[i - 1].y + dy * (x - point[i - 1].x) / dx;
-		mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 180 + y, 0xffd700);
+    	y = point[i - 1].y + dy * (x - point[i - 1].x) / dx;
+		// first y + dy * (current x - prev x) / dx;
+		mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 200 + y, 0x5f96c9);
 		x++;
 	}
-  if (i + map->width < map->total)
+}
+
+int key_press(int key, void *param)
+{
+	if (key == 53)
+	{
+		exit(1);
+	}
+	return (0);
+}
+
+void draw_line(int x0, int y0, int x1, int y1, int color, void *mlx_ptr, void *win_ptr)
+{
+  int dx = abs(x1 - x0);
+  int dy = abs(y1 - y0);
+  int sx = x1 >= x0 ? 1 : -1;
+  int sy = y1 >= y0 ? 1 : -1;
+
+  if (dy <= dx)
   {
-    dx = point[i + map->width - 1].x - point[i].x;
-    dy = point[i + map->width - 1].y - point[i].x;
-    x = point[i].x;
-    while (x < point[i + map->width - 1].x)
+    int d = (dy << 1) - dx;
+    int d1 = dy << 1;
+    int d2 = (dy - dx) << 1;
+    mlx_pixel_put(mlx_ptr, win_ptr, 450 + x0, 200 + y0, 0xbaffec);
+    for(int x = x0 + sx, y = y0, i = 1; i <= dx; i++, x += sx)
     {
-      y = point[i].y + dy * (x - point[i].x) / dx;
-      mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 180 + y, 0xff0000);
-      x++;
+      if ( d >0)
+      {
+        d += d2;
+        y += sy;
+      }
+      else
+        d += d1;
+      mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 200 + y, 0xbaffec);
     }
   }
+  else
+  {
+    int d = (dx << 1) - dy;
+    int d1 = dx << 1;
+    int d2 = (dx - dy) << 1;
+    mlx_pixel_put(mlx_ptr, win_ptr, 450 + x0, 200 + y0, 0xbaffec);
+    for(int y = y0 + sy, x = x0, i = 1; i <= dy; i++, y += sy)
+    {
+      if ( d >0)
+      {
+        d += d2;
+        x += sx;
+      }
+      else
+        d += d1;
+      mlx_pixel_put(mlx_ptr, win_ptr, 450 + x, 200 + y, 0xbaffec);
+    }
+  }
+}
 
-//  printf("this is x %d and y %d\n", x, y);
+void connect_line(t_point *point, t_map *map, void *mlx_ptr, void *win_ptr)
+{
+	int counter;
+	int prev_y;
+
+	counter = 0;
+
+	while(counter < map->total)
+	{
+		prev_y = counter - map->width;
+		if (prev_y >= 0)
+		{
+			draw_line(point[counter].x, point[counter].y, point[prev_y].x, point[prev_y].y, 0xbaffec, mlx_ptr, win_ptr);
+		}
+		counter++;
+	}
 }
 
 void to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr, void *win_ptr )
 {
+	int dx, dy;
 	if (massiv == 0)
 	{
 		point[i].x = ((map->x_now - map->y_now) + map->stepx) * cos(0.523599);
@@ -81,10 +142,10 @@ void to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr
 		point[i].y = -(massiv * 3) + (map->x_now + map->y_now) * sin(0.523599);
 	}
 	map->x_now = map->x_now + map->stepx;
-	mlx_pixel_put(mlx_ptr, win_ptr, 450 + point[i].x, 180 + point[i].y, 0xffd700);
+ //mlx_pixel_put(mlx_ptr, win_ptr, 450 + point[i].x, 200 + point[i].y, 0xab82ff);
 	if (i > 0)
 	{
-		drawline(point, map, mlx_ptr, win_ptr, i);
+		draw_x(point, mlx_ptr, win_ptr, i);
 	}
 	// printf("This is x %f and y %f and i is : %d\n", point[i].x, point[i].y, i);
 }
@@ -135,6 +196,7 @@ void		read_map(char *file, t_map *map, void *mlx_ptr, void *win_ptr)
 		map->x_now = 100 - map->stepx;
 		map->y_now = map->y_now + map->stepy;
 	}
+	connect_line(point, map, mlx_ptr, win_ptr);
 }
 
 int main(int argc, char **argv)
@@ -145,11 +207,17 @@ int main(int argc, char **argv)
 
 	if (argc == 2)
 	{
-	map = (t_map*)malloc(sizeof(t_map));
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, 1000, 1000, "My FDF");
-	read_map(argv[1], map, mlx_ptr, win_ptr);
-	mlx_string_put(mlx_ptr, win_ptr, 400, 100, 0xffd700, "Welcome to FDF");
-	mlx_loop(mlx_ptr);
+		map = (t_map*)malloc(sizeof(t_map));
+		mlx_ptr = mlx_init();
+		win_ptr = mlx_new_window(mlx_ptr, 1000, 1000, "My FDF");
+		read_map(argv[1], map, mlx_ptr, win_ptr);
+		mlx_string_put(mlx_ptr, win_ptr, 400, 100, 0xe6e6fa, "Welcome to FDF");
+		mlx_string_put(mlx_ptr, win_ptr, 350, 900, 0xe6e6fa, "~To exit please press ESC~");
+		mlx_key_hook(win_ptr, key_press, (void *)0);
+		mlx_loop(mlx_ptr);
 	}
+	else if (argc < 2)
+		write(1, "Usage: ./fdf.out [name_of_map]\n", 32);
+	else
+		return (-1);
 }
