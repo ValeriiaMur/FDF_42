@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 20:29:59 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/11/28 14:54:07 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/11/28 19:32:47 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	draw_x(t_point *point, int i, t_map *map)
 	while (point[i].x > x)
 	{
 		y = point[i - 1].y + dy * (x - point[i - 1].x) / dx;
-		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 450 + x, 200 + y, 0x5f96c9);
+		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 500 + x, 200 + y, map->color);
 		x++;
 	}
 }
@@ -58,8 +58,8 @@ void	draw_first(t_point *point, int counter, t_map *map)
 	map->d = (map->dy << 1) - map->dx;
 	map->d1 = map->dy << 1;
 	map->d2 = (map->dy - map->dx) << 1;
-	mlx_pixel_put(map->mlx_ptr, map->win_ptr, 450 + point[counter].x,
-		200 + point[counter].y, 0xbaffec);
+	mlx_pixel_put(map->mlx_ptr, map->win_ptr, 500 + point[counter].x,
+		200 + point[counter].y, map->color);
 	y = point[counter].y + map->sy;
 	x = point[counter].x;
 	while (map->i <= map->dx)
@@ -71,8 +71,8 @@ void	draw_first(t_point *point, int counter, t_map *map)
 		}
 		else
 			map->d += map->d1;
-		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 450 + x, 200 + y,
-			0xbaffec);
+		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 500 + x, 200 + y,
+			map->color);
 		map->i++;
 		x += map->sx;
 	}
@@ -106,8 +106,8 @@ void	keep_drawing(t_point *point, int counter, t_map *map)
 	map->d = (map->dx << 1) - map->dy;
 	map->d1 = map->dx << 1;
 	map->d2 = (map->dx - map->dy) << 1;
-	mlx_pixel_put(map->mlx_ptr, map->win_ptr, 450 + point[counter].x,
-		200 + point[counter].y, 0xbaffec);
+	mlx_pixel_put(map->mlx_ptr, map->win_ptr, 500 + point[counter].x,
+		200 + point[counter].y, map->color);
 	y = point[counter].y + map->sy;
 	x = point[counter].x;
 	map->i = 1;
@@ -120,7 +120,7 @@ void	keep_drawing(t_point *point, int counter, t_map *map)
 		}
 		else
 			map->d += map->d1;
-		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 450 + x, 200 + y, 0xbaffec);
+		mlx_pixel_put(map->mlx_ptr, map->win_ptr, 500 + x, 200 + y, map->color);
 		map->i++;
 		y += map->sy;
 	}

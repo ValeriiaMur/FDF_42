@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 18:41:19 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/11/28 15:22:28 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/11/28 20:35:38 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct	s_map
 	int			d1;
 	int			d2;
 	int			i;
+	int			color;
 }				t_map;
 
 void			draw_x(t_point *point, int i, t_map *map);
@@ -58,5 +59,6 @@ void			draw_init(t_point *point, int counter, int prev_y, t_map *map);
 void			keep_drawing(t_point *point, int counter, t_map *map);
 void			draw_y(t_point *point, int counter, int prev_y, t_map *map);
 void			draw_first(t_point *point, int counter, t_map *map);
+void			rainbow(t_map *map, int massiv);
 
 #endif

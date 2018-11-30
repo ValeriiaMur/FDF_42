@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/23 18:52:12 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/11/25 14:40:25 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/11/28 17:19:58 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,6 @@ size_t				ft_list_size(t_list *lst);
 void				ft_lstrev(t_list **alst);
 int					get_next_line(const int fd, char **line);
 int					ft_count_words(const char *s, char c);
-int			reading(char **line, char **text, int fd);
+int					reading(char **line, char **text, int fd);
 
 #endif

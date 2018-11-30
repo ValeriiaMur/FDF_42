@@ -6,13 +6,17 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 20:29:32 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/11/27 20:56:59 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/11/30 09:14:15 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/fdf.h"
 
-void	to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr, void *win_ptr)
+/*
+** Transfer to coordinates here, iso porjection, draw on x
+*/
+
+void	to_coordinates(int massiv, t_point *point, t_map *map, int i)
 {
 	if (massiv == 0)
 	{
@@ -26,50 +30,43 @@ void	to_coordinates(int massiv, t_point *point, t_map *map, int i, void *mlx_ptr
 	}
 	map->x_now = map->x_now + map->stepx;
 	if (i > 0)
-	{
-		draw_x(point, mlx_ptr, win_ptr, i);
-	}
+		draw_x(point, i, map);
+	rainbow(map, massiv);
 }
 
-void map_init(t_map *map, int x, int y)
+void	map_init(t_map *map, int x, int y)
 {
 	map->height = y;
 	map->width = x;
-	map->stepx = 500/x;
-	map->stepy = 500/y;
+	map->stepx = 500 / x;
+	map->stepy = 500 / y;
 	map->total = x * y;
 	map->x_now = 100 - map->stepx;
 	map->y_now = 100;
 }
 
-void		read_map(char *file, t_map *map, void *mlx_ptr, void *win_ptr)
+/*
+** Read file 2ns time to transfer to coordinates
+*/
+
+void	read_map(char *file, t_map *map, int fd, char *line)
 {
-	int fd;
-	char *line;
-	int x = 0;
-	int y = 0;
-	int i = 0;
-	char **massiv;
+	int		i;
+	int		a;
+	char	**massiv;
 	t_point *point;
 
-	fd = open(file, O_RDONLY);
-	while(get_next_line(fd, &line) == 1)
-	{
-		x = ft_count_words(line, ' ');
-		y++;
-	}
-	free(line);
-	close(fd);
-	map_init(map, x, y);
+	i = 0;
+	a = 0;
+	get_info(file, map, fd, line);
 	point = (t_point*)malloc(sizeof(t_point) * map->total);
 	fd = open(file, O_RDONLY);
-	while(get_next_line(fd, &line) == 1)
+	while (get_next_line(fd, &line) == 1)
 	{
 		massiv = ft_strsplit(line, ' ');
-		int a = 0;
-		while(a < map->width)
+		while (a < map->width)
 		{
-			to_coordinates(ft_atoi(massiv[a]), point, map, i, mlx_ptr, win_ptr);
+			to_coordinates(ft_atoi(massiv[a]), point, map, i);
 			i++;
 			a++;
 		}
@@ -77,5 +74,51 @@ void		read_map(char *file, t_map *map, void *mlx_ptr, void *win_ptr)
 		map->x_now = 100 - map->stepx;
 		map->y_now = map->y_now + map->stepy;
 	}
-	connect_line(point, map, mlx_ptr, win_ptr);
+	connect_line(point, map);
+	free(point);
+}
+
+/*
+** Read file for the 1st time to transfer to get width and lengt, map init.
+*/
+
+void	get_info(char *file, t_map *map, int fd, char *line)
+{
+	int		x;
+	int		y;
+
+	x = 0;
+	y = 0;
+	fd = open(file, O_RDONLY);
+	while (get_next_line(fd, &line) == 1)
+	{
+		x = ft_count_words(line, ' ');
+		y++;
+	}
+	free(line);
+	close(fd);
+	map_init(map, x, y);
+}
+
+/*
+** Connect coordinates on y (using Bresenham's). My logic is to jump on a next
+** row by substracting width of the map. The first row < 0 and is not connected
+** with the dots up.
+*/
+
+void	connect_line(t_point *point, t_map *map)
+{
+	int counter;
+	int prev_y;
+
+	counter = 0;
+	while (counter < map->total)
+	{
+		prev_y = counter - map->width;
+		if (prev_y >= 0)
+		{
+			draw_y(point, counter, prev_y, map);
+		}
+		counter++;
+	}
 }
