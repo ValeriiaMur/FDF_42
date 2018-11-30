@@ -5,6 +5,6 @@
 
 ![./maps/42.fdf](https://pp.userapi.com/c850616/v850616032/59776/aDqyt3Atf2s.jpg)
 
-![./maps/pylone.fdf](
+![./maps/pylone.fdf](https://pp.userapi.com/c850616/v850616032/5978a/Xkj2nnysU5U.jpg)
 
 
