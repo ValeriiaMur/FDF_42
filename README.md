@@ -13,4 +13,6 @@ Examples of the maps:
 
 ![./maps/pylone.fdf](https://pp.userapi.com/c850616/v850616032/5978a/Xkj2nnysU5U.jpg)
 
+* pyra.fdf
 
+![./maps/pyra.fdf] (https://pp.userapi.com/c850616/v850616032/59794/pO-OV6wC694.jpg)
